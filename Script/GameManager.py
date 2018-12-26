@@ -3,6 +3,7 @@ class GameManager:
 
     _unique_instance = None
 
+
     def __new__(cls):
         raise NotImplementedError('Cannot initialize via Constructor')
 
@@ -16,3 +17,5 @@ class GameManager:
             cls._unique_instance = cls.__internal_new__() 
 
         return cls._unique_instance
+    
+
