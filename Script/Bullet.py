@@ -1,20 +1,20 @@
-from GameObject import GameObject
+from Script.GameObject import GameObject
 from abc import ABCMeta, abstractmethod
 
 
 class Bullet(GameObject,metaclass=ABCMeta):
 
-    objType = "bullet"
     
     def __init__(self,damage,speed,explosion,orbit):
+         self.objType = "bullet"
          self.damage = int(damage)
          self.speed = int(speed)
          self.explosion = explosion
          self.orbit = orbit
+         self.position = [0, 0]
 
-    @classmethod
-    def getType(cls):
-        return cls.objType
+    def getType(self):
+        return self.objType
 
     def move(self):
         pass
@@ -25,5 +25,12 @@ class Bullet(GameObject,metaclass=ABCMeta):
     def setDamage(self,damage):
         self.damage = damage
     
-    
+    def getPosition(self):
+        return self.position
+
+    def setPosition(self, pos):
+        if type(pos) == type(list()):
+           self.position = pos
+        else:
+           print("Argument please in the list")
     

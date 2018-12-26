@@ -1,6 +1,7 @@
 import pyxel
 from Script.Tile import Tile
 from Script.Tanks.testTank import testTank
+from Script.Bullets.testBullet import testBullet
 class ClientGUI:
 
     mapSize = 10
@@ -14,6 +15,12 @@ class ClientGUI:
         self.test = testTank()
         pyxel.image(0).load(0, 0, self.test.getImage())
         self.test.setPosition([2,2])
+        
+        #create testBullet
+        self.testBul = testBullet()
+        pyxel.image(1).load(0, 0, self.testBul.getImage())
+        self.testBul.setPosition([2,3])
+
         pyxel.run(self.update, self.draw)
 
 
@@ -47,8 +54,13 @@ class ClientGUI:
         self.y = 1
         self.posTile = self.tileList[self.test.getPosition()[
             self.x]][self.test.getPosition()[self.y]]
+
+        self.posTile2 = self.tileList[self.testBul.getPosition()[
+            self.x]][self.testBul.getPosition()[self.y]]
         pyxel.blt(self.posTile.getCenterPosX(), self.posTile.getCenterPosY(),
                   0, 0, 0, 32, 38, 0)
+        pyxel.blt(self.posTile2.getCenterPosX(), self.posTile2.getCenterPosY(),
+                  1, 0, 0, 32, 38, 0)
         # self.test_text(6, 124)
 
 
