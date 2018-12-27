@@ -2,24 +2,24 @@ import pyxel
 from Script.Tile import Tile
 from Script.Tanks.testTank import testTank
 from Script.Bullets.testBullet import testBullet
+from Script.GameManager import GameManager
 class ClientGUI:
 
     mapSize = 10
     def __init__(self):
         pyxel.init(255, 255, caption="Hello Pyxel")
+        self.GM = GameManager()
         #pyxel.load("assets/tile.pyxel")
         self.tileList = [ [Tile(25,w*25,h*25) for h in range(ClientGUI.mapSize)] for w in range(ClientGUI.mapSize)]
 
-
+        
         #create testTank
-        self.test = testTank()
-        pyxel.image(0).load(0, 0, self.test.getImage())
-        self.test.setPosition([2,2])
+        #self.test = testTank()
+        pyxel.image(0).load(0, 0, self.GM.getTankImage()[0])
+        #self.test.setPosition([2,2])
         
         #create testBullet
-        self.testBul = testBullet()
-        pyxel.image(1).load(0, 0, self.testBul.getImage())
-        self.testBul.setPosition([2,3])
+        pyxel.image(1).load(0, 0, self.GM.getBulletImage()[0])
 
         pyxel.run(self.update, self.draw)
 
@@ -30,16 +30,16 @@ class ClientGUI:
         
         #operate tank
 
-        if pyxel.btnp(pyxel.KEY_LEFT):
-          self.test.moveLeft()
-        elif pyxel.btnp(pyxel.KEY_RIGHT):
-          self.test.moveRight()
-        elif pyxel.btnp(pyxel.KEY_UP):
-          self.test.moveUp()
-        elif pyxel.btnp(pyxel.KEY_DOWN):
-          self.test.moveDown()
-        elif pyxel.btnp(pyxel.KEY_SPACE):
-           self.test.launchBullet()
+        # if pyxel.btnp(pyxel.KEY_LEFT):
+        #   self.test.moveLeft()
+        # elif pyxel.btnp(pyxel.KEY_RIGHT):
+        #   self.test.moveRight()
+        # elif pyxel.btnp(pyxel.KEY_UP):
+        #   self.test.moveUp()
+        # elif pyxel.btnp(pyxel.KEY_DOWN):
+        #   self.test.moveDown()
+        # elif pyxel.btnp(pyxel.KEY_SPACE):
+        #    self.test.launchBullet()
         
 
     def draw(self):
@@ -52,11 +52,11 @@ class ClientGUI:
         #pyxel.blt(-5, -1, 0, 0, 0, self.test.getPosition()[0], self.test.getPosition()[1],0)
         self.x = 0
         self.y = 1
-        self.posTile = self.tileList[self.test.getPosition()[
-            self.x]][self.test.getPosition()[self.y]]
+        self.posTile = self.tileList[self.GM.getTankPosition()[0][
+            self.x]][self.GM.getTankPosition()[0][self.y]]
 
-        self.posTile2 = self.tileList[self.testBul.getPosition()[
-            self.x]][self.testBul.getPosition()[self.y]]
+        self.posTile2 = self.tileList[self.GM.getBulletPosition()[0][
+            self.x]][self.GM.getBulletPosition()[0][self.y]]
         pyxel.blt(self.posTile.getCenterPosX(), self.posTile.getCenterPosY(),
                   0, 0, 0, 32, 38, 0)
         pyxel.blt(self.posTile2.getCenterPosX(), self.posTile2.getCenterPosY(),
