@@ -5,13 +5,14 @@ from abc import ABCMeta, abstractmethod
 class Bullet(GameObject,metaclass=ABCMeta):
 
     
-    def __init__(self,damage,speed,explosion,orbit):
+    def __init__(self,damage,speed,explosion,orbit,point):
          self.objType = "bullet"
          self.damage = int(damage)
          self.speed = int(speed)
          self.explosion = explosion
          self.orbit = orbit
          self.position = [0, 0]
+         self.point = point
 
     def getType(self):
         return self.objType
@@ -33,4 +34,7 @@ class Bullet(GameObject,metaclass=ABCMeta):
            self.position = pos
         else:
            print("Argument please in the list")
+
+    def getPoint(self):
+        return self.point
     

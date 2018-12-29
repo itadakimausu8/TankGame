@@ -14,13 +14,14 @@ class TCPData:
       self.enemyBulletType = None
       self.enemyBulletPos = None
       self.enemyBulletPoint = None
+      self.turn = None
 
 
     def pushData(self):
-        return "|"+str(self.myTankType) + "|"+str(self.myTankPos) + "|"+str(self.myTankHP) + "|"+str(self.myBulletType) + "|"+str(self.myBulletPos) + "|"+str(self.myBulletPoint) + "|"+str(self.enemyTankType) + "|"+str(self.enemyTankPos) + "|"+str(self.enemyTankHP) + "|"+str(self.enemyBulletType) + "|"+str(self.enemyBulletPos) + "|"+str(self.enemyBulletPoint)
+        return "|"+str(self.myTankType) + "|"+str(self.myTankPos) + "|"+str(self.myTankHP) + "|"+str(self.myBulletType) + "|"+str(self.myBulletPos) + "|"+str(self.myBulletPoint) + "|"+str(self.enemyTankType) + "|"+str(self.enemyTankPos) + "|"+str(self.enemyTankHP) + "|"+str(self.enemyBulletType) + "|"+str(self.enemyBulletPos) + "|"+str(self.enemyBulletPoint)+"|"+str(self.turn)+"|"
     
     def setData(self, myTankType, myTankPos, myTankHP, myBulletType, myBulletPos, myBulletPoint,
-                enemyTankType, enemyTankPos, enemyTankHP, enemyBulletType, enemyBulletPos, enemyBulletPoint):
+                enemyTankType, enemyTankPos, enemyTankHP, enemyBulletType, enemyBulletPos, enemyBulletPoint,turn):
       self.myTankType = myTankType
       self.myTankPos = myTankPos
       self.myTankHP = myTankHP
@@ -33,23 +34,25 @@ class TCPData:
       self.enemyBulletType = enemyBulletType
       self.enemyBulletPos = enemyBulletPos
       self.enemyBulletPoint = enemyBulletPoint
+      self.turn = turn
     
     def setStringData(self, stringData):
         data_list = stringData.split("|")
         print("data_list:" + str(data_list))
         self.myTankType = int(data_list[1])
-        self.myTankPos = int(data_list[2])
+        self.myTankPos = self.toList(data_list[2])
         self.myTankHP = int(data_list[3])
         self.myBulletType = self.toList(data_list[4])
         self.myBulletPos = self.toList(data_list[5])
         self.myBulletPoint = self.toList(data_list[6])
         self.enemyTankType = int(data_list[7])
-        self.enemyTankPos = int(data_list[8])
+        self.enemyTankPos = self.toList(data_list[8])
         self.enemyTankHP = int(data_list[9])
         self.enemyBulletType = self.toList(data_list[10])
         self.enemyBulletPos = self.toList(data_list[11])
         self.enemyBulletPoint = self.toList(data_list[12])
-        print("reData:" + self.pushData())
+        self.turn = int(data_list[13])
+        #print("reData:" + self.pushData())
 
     def toList(self, content):
         pattern = '\d+'
@@ -65,8 +68,8 @@ class TCPData:
     def getMyTankType(self):
         return self.myTankType
 
-    def getMyTankPos(self):
-        return self.myTankType
+    def getMyTankPosition(self):
+        return self.myTankPos
 
     def getMyTankHP(self):
         return self.myTankHP
@@ -83,7 +86,7 @@ class TCPData:
     def getEnemyTankType(self):
         return self.enemyTankType
 
-    def getEnemyTankPos(self):
+    def getEnemyTankPostion(self):
         return self.enemyTankPos
 
     def getEnemyTankHP(self):
@@ -92,16 +95,20 @@ class TCPData:
     def getEnemyBulletType(self):
         return self.enemyBulletType
 
-    def getEnemyBulletPos(self):
+    def getEnemyBulletPostion(self):
         return self.enemyBulletPos
 
     def getEnemyBulletPoint(self):
         return self.enemyBulletPoint
 
+    def getMyTurn(self):
+        print(self.turn)
+        return self.turn
+
     def setMyTankType(self,myTankType):
         self.myTankType = myTankType
 
-    def setMyTankPos(self,myTankPos):
+    def setMyTankPostion(self,myTankPos):
         self.myTankPos = myTankPos
 
     def setMyTankHP(self,myTankHP):
@@ -110,7 +117,7 @@ class TCPData:
     def setMyBulletType(self,myBulletType):
         self.myBulletType = myBulletType
 
-    def setMyBulletPos(self,myBulletPos):
+    def setMyBulletPostion(self,myBulletPos):
         self.myBulletPos = myBulletPos
 
     def setMyBulletPoint(self,myBulletPoint):
@@ -119,7 +126,7 @@ class TCPData:
     def setEnemyTankType(self,enemyTankType):
         self.enemyTankType = enemyTankType
 
-    def setEnemyTankPos(self,enemyTankPos):
+    def setEnemyTankPostion(self,enemyTankPos):
         self.enemyTankPos = enemyTankPos
 
     def setEnemyTankHP(self,enemyTankHP):
@@ -128,11 +135,13 @@ class TCPData:
     def setEnemyBulletType(self,enemyBulletType):
         self.enemyBulletType = enemyBulletType
 
-    def setEnemyBulletPos(self,enemyBulletPos):
+    def setEnemyBulletPostion(self,enemyBulletPos):
         self.enemyBulletPos = enemyBulletPos
 
     def setEnemyBulletPoint(self,enemyBulletPoint):
         self.enemyBulletPoint = enemyBulletPoint
 
+    def setMyTurn(self,turn):
+        self.turn = turn
 
     
