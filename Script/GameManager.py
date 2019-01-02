@@ -105,7 +105,7 @@ class GameManager:
     def setData(self,data):
         print("setData:" + str(data.getMyTankPosition()))
         self.turn = int(data.getMyTurn())
-        self.myTank.setPosition(data.getMyTankPosition())
+        self.myTank.setPosition(data.getEnemyTankPosition())
         self.enemyTank.setPosition(data.getMyTankPosition())
 
     def sendData(self,data):

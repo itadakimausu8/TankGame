@@ -86,7 +86,7 @@ class TCPData:
     def getEnemyTankType(self):
         return self.enemyTankType
 
-    def getEnemyTankPostion(self):
+    def getEnemyTankPosition(self):
         return self.enemyTankPos
 
     def getEnemyTankHP(self):

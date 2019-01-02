@@ -43,6 +43,7 @@ class ClientGUI:
                     self.confirmDraw = True
                     #self.GM.load()
                 elif pyxel.btnp(pyxel.KEY_RIGHT):
+                    print("right")
                     self.GM.pressRight()
                     self.confirmDraw = True
                     #self.GM.load()
@@ -74,7 +75,7 @@ class ClientGUI:
         #pyxel.blt(-5, -1, 0, 0, 0, self.test.getPosition()[0], self.test.getPosition()[1],0)
         self.x = 0
         self.y = 1
-
+        
         self.posTile = self.tileList[self.GM.getTankPosition()[0][
             self.x]][self.GM.getTankPosition()[0][self.y]]
         self.posTile2 = self.tileList[self.GM.getBulletPosition()[0][
@@ -86,6 +87,11 @@ class ClientGUI:
         pyxel.blt(self.posTile2.getCenterPosX(), self.posTile2.getCenterPosY(),
                   1, 0, 0, 32, 38, 0)
 
+
+        self.posTile = self.tileList[self.GM.getTankPosition()[1][
+            self.x]][self.GM.getTankPosition()[1][self.y]]
+        pyxel.blt(self.posTile.getCenterPosX(), self.posTile.getCenterPosY(),
+                  0, 0, 0, 32, 38, 0)
         
         if self.confirmDraw:
             self.GM.load()
