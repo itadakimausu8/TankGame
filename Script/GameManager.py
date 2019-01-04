@@ -33,17 +33,32 @@ class GameManager:
 
     def __init__(self):
          
+        # self.tileList = [[Tile(25, w*25, h*25) for h in range(mapSize)]
+        #                         for w in range(mapSize)]
+
         self.myTank = testTank()
         self.myTank.setPosition([0,0])
 
-        self.myBullet = testBullet([0,3])
-        self.myBullet.setPosition([0,1])
         
         self.enemyTank = testTank()
         self.enemyTank.setPosition([9,9])
 
-        self.enemyBullet = testBullet([0,3])
-        self.enemyBullet.setPosition([9, 8])
+
+        self.bullet_list = list()
+        self.myBullet = testBullet([2, 7], [3,9])
+        self.myBullet.setPosition([3, 9])
+
+        self.bullet_list.append(self.myBullet)
+
+        # self.enemyBullet = testBullet([9,6],[0,9])
+        # self.enemyBullet.setPosition([0, 9])
+
+        #self.bullet_list.append(self.enemyBullet)
+
+        # self.enemyBullet2 = testBullet([9,8],[9,9])
+        # self.enemyBullet2.setPosition([9, 9])
+
+       #self.bullet_list.append(self.enemyBullet2)
 
        #turn
         self.turn = 99
@@ -53,6 +68,7 @@ class GameManager:
     def load(self):
         data = self.createData()
         self.sendData(data)
+
 
 
     def getTankImage(self):
@@ -65,13 +81,22 @@ class GameManager:
         return [self.myTank.getHP(), self.enemyTank.getHP()]
 
     def getBulletImage(self):
-        return [self.myBullet.getImage(), self.enemyBullet.getImage()]
-    
+        #return [self.myBullet.getImage(), self.enemyBullet.getImage()]
+        return [bullet.getImage() for bullet in self.bullet_list]
+
     def getBulletPosition(self):
-        return [self.myBullet.getPosition(), self.enemyBullet.getPosition()]
+        #return [self.myBullet.getPosition(), self.enemyBullet.getPosition()]
+        return [bullet.getPosition() for bullet in self.bullet_list]
+    
+    def getBulletPoint(self):
+        #return [self.myBullet.getPosition(), self.enemyBullet.getPosition()]
+        return [bullet.getPoint() for bullet in self.bullet_list]
+    
+    def getBulletOrbit(self):
+        #return [self.myBullet.getPosition(), self.enemyBullet.getPosition()]
+        return [bullet.getOrbit() for bullet in self.bullet_list]
 
     def getTurn(self):
-        print(self.turn)
         return self.turn
     
     def changeTurn(self):
@@ -97,9 +122,20 @@ class GameManager:
     # def pressSpace(self):
     #     self.myTank.launchBullet()
 
+    def bulletMove(self):
+        for bullet in self.bullet_list:
+            bullet.move()
+            print("bulletMovePos" + str(bullet.getPosition()))
+        # import pdb
+        # pdb.set_trace()
+
     def createData(self):
         data = TCPData()
-        data.setData(1, self.getTankPosition()[0], self.getTankHP()[0], [1], self.getBulletPosition()[0], [0], 1, self.getTankPosition()[1], self.getTankHP()[1], [1], self.getBulletPosition()[1], [0],self.turn)
+        # print("dataset2:"+str(self.getBulletPosition()) +
+        #       ":" + str(self.getBulletPoint()))
+        data.setData(1, self.getTankPosition()[0], self.getTankHP()[0], [1], self.getBulletPosition(), self.getBulletPoint(
+        ), 1, self.getTankPosition()[1], self.getTankHP()[1], self.getBulletOrbit(), self.getBulletPosition(), self.getBulletPoint(
+        ), self.turn)
         return data
 
     def setData(self,data):
@@ -107,6 +143,19 @@ class GameManager:
         self.turn = int(data.getMyTurn())
         self.myTank.setPosition(data.getEnemyTankPosition())
         self.enemyTank.setPosition(data.getMyTankPosition())
+        
+        # print("dataset:"+str(data.getMyBulletPosition()) +
+        #       ":" + str(data.getMyBulletPoint()))
+
+        self.bullet_list = list()
+        for  bulletPos,bulletPoint,bulletOrbit in zip(data.getMyBulletPosition(),data.getMyBulletPoint(),data.getEnemyBulletType()):
+            bullet = testBullet(bulletPoint,bulletOrbit)
+            bullet.setPosition(bulletPos)
+            bullet.setOrbit(bulletOrbit)
+            #bullet.setPoint(bulletPoint)
+            self.bullet_list.append(bullet)
+        
+            
 
     def sendData(self,data):
         print("data" + data.pushData())
@@ -114,6 +163,10 @@ class GameManager:
         print("rtData" + rtData.pushData())
         self.setData(rtData)
     
+    # def calcTilePosition(self,pos):
+    #     tile = self.tileList[pos[0]][pos[1]]
+    #     return [tile.getCenterPosX(), tile.getCenterPosY()]
+
 
     # def getBulletPoint(self):
     #     return [self.myBullet.getPoint(), self.enemyBullet.getPoint()]

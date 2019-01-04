@@ -43,14 +43,14 @@ class TCPData:
         self.myTankPos = self.toList(data_list[2])
         self.myTankHP = int(data_list[3])
         self.myBulletType = self.toList(data_list[4])
-        self.myBulletPos = self.toList(data_list[5])
-        self.myBulletPoint = self.toList(data_list[6])
+        self.myBulletPos = self.toBulletList(data_list[5])
+        self.myBulletPoint = self.toBulletList(data_list[6])
         self.enemyTankType = int(data_list[7])
         self.enemyTankPos = self.toList(data_list[8])
         self.enemyTankHP = int(data_list[9])
-        self.enemyBulletType = self.toList(data_list[10])
-        self.enemyBulletPos = self.toList(data_list[11])
-        self.enemyBulletPoint = self.toList(data_list[12])
+        self.enemyBulletType = self.toBulletList(data_list[10])
+        self.enemyBulletPos = self.toBulletList(data_list[11])
+        self.enemyBulletPoint = self.toBulletList(data_list[12])
         self.turn = int(data_list[13])
         #print("reData:" + self.pushData())
 
@@ -61,9 +61,29 @@ class TCPData:
 
         result_list = list()
         for result in results:
-          result_list.append(int(result))
-
+            result_list.append(int(result))
+        
         return result_list
+
+    def toBulletList(self, content):
+        pattern = '\d+'
+        repatter = re.compile(pattern)
+        results = repatter.findall(content)
+
+        result_list = list()
+        pos = list()
+        for result in results:
+            #import pdb; pdb.set_trace()
+            pos.append(int(result))
+            print("pos" + str(pos))
+            if len(pos) >= 2:
+                result_list.append(pos)
+                pos = list()
+        
+        print("reuls_list:" + str(results))
+        return result_list
+
+    
 
     def getMyTankType(self):
         return self.myTankType
@@ -77,7 +97,7 @@ class TCPData:
     def getMyBulletType(self):
         return self.myBulletType
 
-    def getMyBulletPos(self):
+    def getMyBulletPosition(self):
         return self.myBulletPos
 
     def getMyBulletPoint(self):

@@ -15,12 +15,17 @@ def setTurnData(receive, first):
           data1.setMyTurn(0)
       elif(turn == 99):
           data1.setMyTurn(1)
-      elif(turn == 0):
-          data1.setMyTurn(0)
-      else:
-          data1.setMyTurn(1)
+    #   elif(turn == 0):
+    #       data1.setMyTurn(0)
+    #   else:
+    #       data1.setMyTurn(1)
 
       return bytes(data1.pushData(), encoding='utf-8', errors='replace')
+
+def orderConnect(receive):
+      data1 = TCPData()
+      data1.setStringData(str(receive))
+      return int(data1.getMyTurn())
 
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -34,9 +39,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     while True:
         # 誰かがアクセスしてきたら、コネクションとアドレスを入れる
         conn1, addr1 = s.accept()
-        print("conn1")#enemyTurn
+        print("conn1:" + str(conn1))#enemyTurn
         conn2, addr2 = s.accept()
-        print("conn2")#myTurn
+        print("conn2:" + str(conn2))  # myTurn
         
         data1 = ""
         data2 = ""

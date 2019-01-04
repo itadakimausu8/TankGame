@@ -17,10 +17,13 @@ class TCPClient:
             reData.setStringData(receive)
             return reData
 
-    def ready(self):
+    def ready(self, data):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
             s.connect(('127.0.0.1', 50007))
+
+            s.sendall(bytes(data.pushData(), encoding='utf-8', errors='replace'))
+
             receive = s.recv(1024).decode('utf-8')
             reData = TCPData()
             reData.setStringData(receive)
