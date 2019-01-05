@@ -13,6 +13,8 @@ class Bullet(GameObject,metaclass=ABCMeta):
          self.orbit = orbit
          self.position = [0, 0]
          self.point = point
+         
+         self.arrival = False
 
     def getType(self):
         return self.objType
@@ -25,18 +27,24 @@ class Bullet(GameObject,metaclass=ABCMeta):
 
 
         if xd == 0 or yd == 0:
-            if (int(self.point[x]-self.position[x]) == 0) and (int(self.point[y]-self.position[y]) == 0):
-                print("Destroy")
-                self.Destroy()
+            if (self.point[x] == self.position[x]) and (self.point[y] == self.position[y]):
+                self.arrival = True
+                #self.Destroy()
                 return
-            if xd > 0:
+            if abs(xd) > 0:
                 self.position[x] += int(xd/abs(xd))
-            else:
+            elif abs(yd) > 0:
                 self.position[y] += int(yd/abs(yd))
+                
+
+            if (self.point[x] == self.position[x]) and (self.point[y] == self.position[y]):
+                self.arrival = True
+                #self.Destroy()
+                return
         else:
-            if (int(self.point[x]-self.position[x]) == 0) or (int(self.point[y]-self.position[y]) == 0):
-                print("Destroy")
-                self.Destroy()
+            if (self.point[x] == self.position[x]) or (self.point[y] == self.position[y]):
+                self.arrival = True
+                #self.Destroy()
                 return
 
             if abs(xd) > abs(yd):
@@ -50,6 +58,11 @@ class Bullet(GameObject,metaclass=ABCMeta):
             else:
                 self.position[x] += int(xd/abs(xd))
                 self.position[y] += int(yd/abs(yd))
+
+            if (self.point[x] == self.position[x]) or (self.point[y] == self.position[y]):
+                self.arrival = True
+                #self.Destroy()
+                return
 
     def getOrbit(self):
         return self.orbit
@@ -80,6 +93,11 @@ class Bullet(GameObject,metaclass=ABCMeta):
            self.point = point
         else:
            print("Argument please in the list")
+    
+    def getArrival(self):
+        return  self.arrival
+
+    
 
     def Destroy(self):
         del self

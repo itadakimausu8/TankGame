@@ -45,10 +45,10 @@ class GameManager:
 
 
         self.bullet_list = list()
-        self.myBullet = testBullet([2, 7], [3,9])
-        self.myBullet.setPosition([3, 9])
+        # self.myBullet = testBullet([0, 4], [9,8])
+        # self.myBullet.setPosition([9, 8])
 
-        self.bullet_list.append(self.myBullet)
+        # self.bullet_list.append(self.myBullet)
 
         # self.enemyBullet = testBullet([9,6],[0,9])
         # self.enemyBullet.setPosition([0, 9])
@@ -80,6 +80,9 @@ class GameManager:
     def getTankHP(self):
         return [self.myTank.getHP(), self.enemyTank.getHP()]
 
+    def getTankMaxHP(self):
+        return [self.myTank.getMaxHP(), self.enemyTank.getMaxHP()]
+
     def getBulletImage(self):
         #return [self.myBullet.getImage(), self.enemyBullet.getImage()]
         return [bullet.getImage() for bullet in self.bullet_list]
@@ -96,6 +99,9 @@ class GameManager:
         #return [self.myBullet.getPosition(), self.enemyBullet.getPosition()]
         return [bullet.getOrbit() for bullet in self.bullet_list]
 
+    def isBullet(self):
+        return bool(self.bullet_list)
+    
     def getTurn(self):
         return self.turn
     
@@ -119,8 +125,13 @@ class GameManager:
     def pressDown(self):
         self.myTank.moveDown()
     
-    # def pressSpace(self):
-    #     self.myTank.launchBullet()
+    def pressSpace(self):
+        bulletType = self.myTank.launchBullet()
+        pos = [self.myTank.getPosition()[0], self.myTank.getPosition()[1]]
+        bullet = testBullet([0, 4], pos)
+        bullet.setPosition(pos)
+        bullet.setOrbit(pos)
+        self.bullet_list.append(bullet)
 
     def bulletMove(self):
         for bullet in self.bullet_list:
@@ -128,6 +139,48 @@ class GameManager:
             print("bulletMovePos" + str(bullet.getPosition()))
         # import pdb
         # pdb.set_trace()
+
+
+
+    #battle calc 
+    # must process after bulletMove()
+    def calcDamage(self):
+
+        for i ,bullet in enumerate(self.bullet_list):
+            if bullet.getArrival():
+                arrival_bullet = self.bullet_list.pop(i)
+                
+                #explosion
+                myTankPos = self.myTank.getPosition()
+                enemyTankPos = self.enemyTank.getPosition()
+
+                #MyTank calc
+                if (arrival_bullet.getPoint() == myTankPos) or \
+                    ([arrival_bullet.getPoint()[0] + 1, arrival_bullet.getPoint()[1]] == myTankPos) or \
+                    ([arrival_bullet.getPoint()[0] + 1, arrival_bullet.getPoint()[1] - 1] == myTankPos) or  \
+                ([arrival_bullet.getPoint()[0], arrival_bullet.getPoint()[1] - 1] == myTankPos) or \
+                ([arrival_bullet.getPoint()[0] -1, arrival_bullet.getPoint()[1] -1 ] == myTankPos) or \
+                ([arrival_bullet.getPoint()[0] -1, arrival_bullet.getPoint()[1]] == myTankPos) or \
+                ([arrival_bullet.getPoint()[0] -1, arrival_bullet.getPoint()[1] + 1] == myTankPos) or \
+                    ([arrival_bullet.getPoint()[0], arrival_bullet.getPoint()[1] + 1] == myTankPos) or \
+                ([arrival_bullet.getPoint()[0] + 1, arrival_bullet.getPoint()[1] + 1] == myTankPos) :
+                    self.myTank.calcDamage(arrival_bullet.getDamage())
+
+                if (arrival_bullet.getPoint() == enemyTankPos) or \
+                ([arrival_bullet.getPoint()[0] + 1, arrival_bullet.getPoint()[1]] == enemyTankPos) or \
+                    ([arrival_bullet.getPoint()[0] + 1, arrival_bullet.getPoint()[1] - 1] == enemyTankPos) or \
+                    ([arrival_bullet.getPoint()[0], arrival_bullet.getPoint()[1] - 1] == enemyTankPos) or \
+                    ([arrival_bullet.getPoint()[0] - 1, arrival_bullet.getPoint()[1] - 1] == enemyTankPos) or \
+                ([arrival_bullet.getPoint()[0] - 1, arrival_bullet.getPoint()[1]] == enemyTankPos) or \
+                ([arrival_bullet.getPoint()[0] - 1, arrival_bullet.getPoint()[1] + 1] == enemyTankPos) or \
+                    ([arrival_bullet.getPoint()[0], arrival_bullet.getPoint()[1] + 1] == enemyTankPos) or \
+                ([arrival_bullet.getPoint()[0] + 1, arrival_bullet.getPoint()[1] + 1] == enemyTankPos):
+                    self.enemyTank.calcDamage(arrival_bullet.getDamage())
+
+
+                
+
+    #data
 
     def createData(self):
         data = TCPData()
@@ -139,10 +192,11 @@ class GameManager:
         return data
 
     def setData(self,data):
-        print("setData:" + str(data.getMyTankPosition()))
         self.turn = int(data.getMyTurn())
         self.myTank.setPosition(data.getEnemyTankPosition())
         self.enemyTank.setPosition(data.getMyTankPosition())
+        self.myTank.setHP(data.getEnemyTankHP())
+        self.enemyTank.setPosition(data.getMyTankHP())
         
         # print("dataset:"+str(data.getMyBulletPosition()) +
         #       ":" + str(data.getMyBulletPoint()))
@@ -158,9 +212,7 @@ class GameManager:
             
 
     def sendData(self,data):
-        print("data" + data.pushData())
         rtData = self.connect.connecting(data)
-        print("rtData" + rtData.pushData())
         self.setData(rtData)
     
     # def calcTilePosition(self,pos):

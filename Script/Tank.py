@@ -5,8 +5,9 @@ from Script.GameObject import GameObject
 class Tank(GameObject,metaclass=ABCMeta):
 
 
-    def __init__(self,hp,bullet,speed):
+    def __init__(self,hp,maxHP,bullet,speed):
          self.hp = int(hp)
+         self.maxHP = maxHP
          self.bullet = bullet
          self.speed = int(speed)
          self.objType = "Tank"
@@ -20,6 +21,9 @@ class Tank(GameObject,metaclass=ABCMeta):
     
     def getHP(self):
         return self.hp
+    
+    def getMaxHP(self):
+        return self.maxHP
 
     def getSpeed(self):
         return self.speed
@@ -32,9 +36,15 @@ class Tank(GameObject,metaclass=ABCMeta):
            self.position = pos
         else:
            print("Argument please in the list")
+
+    def setHP(self,hp):
+        self.hp = hp
+
+    def setMaxHP(self,maxHP):
+        self.maxHP = maxHP
     
     def launchBullet(self):
-        pass
+        return self.bullet
     
     # move functions 
     def moveUp(self):
