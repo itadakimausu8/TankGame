@@ -80,7 +80,6 @@ class TCPData:
                 result_list.append(pos)
                 pos = list()
         
-        print("reuls_list:" + str(results))
         return result_list
 
     

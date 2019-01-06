@@ -64,11 +64,24 @@ class GameManager:
         self.turn = 99
 
         self.connect = TCPClient()
+
+       #count
+        self.button_count = 0 
     
     def load(self):
         data = self.createData()
         self.sendData(data)
 
+    def read(self):
+        data = self.createData()
+        self.readData(data)
+
+
+    def buttonFrame(self,pyxel_count):
+        if pyxel_count > self.button_count:
+           self.button_count = pyxel_count + 5
+           return True
+        return False
 
 
     def getTankImage(self):
@@ -125,13 +138,24 @@ class GameManager:
     def pressDown(self):
         self.myTank.moveDown()
     
-    def pressSpace(self):
+    def pressSpace(self, bulletPoint):
         bulletType = self.myTank.launchBullet()
         pos = [self.myTank.getPosition()[0], self.myTank.getPosition()[1]]
-        bullet = testBullet([0, 4], pos)
+        bullet = testBullet(bulletPoint, pos)
         bullet.setPosition(pos)
         bullet.setOrbit(pos)
         self.bullet_list.append(bullet)
+
+    def setPoint(self,bulletPoint):
+        #bulletPointには[0,4]みたいにタイルの位置を引数にとってください
+        bulletType = self.myTank.launchBullet()
+        pos = [self.myTank.getPosition()[0], self.myTank.getPosition()[1]]
+        bullet = testBullet(bulletPoint, pos)
+        bullet.setPosition(pos)
+        bullet.setOrbit(pos)
+        self.bullet_list.append(bullet)
+
+        
 
     def bulletMove(self):
         for bullet in self.bullet_list:
@@ -140,15 +164,24 @@ class GameManager:
         # import pdb
         # pdb.set_trace()
 
+    def confirmHP(self):
+        if self.myTank.getHP() <= 0 and self.enemyTank.getHP() <= 0:
+           return "draw"
+        elif self.enemyTank.getHP() <= 0:
+           return "you win"
+        elif self.myTank.getHP() <= 0:
+           return "you lose"
+            
+
 
 
     #battle calc 
     # must process after bulletMove()
     def calcDamage(self):
-
+        arrival_bullets = []
         for i ,bullet in enumerate(self.bullet_list):
             if bullet.getArrival():
-                arrival_bullet = self.bullet_list.pop(i)
+                arrival_bullet = self.bullet_list[i]
                 
                 #explosion
                 myTankPos = self.myTank.getPosition()
@@ -177,8 +210,23 @@ class GameManager:
                 ([arrival_bullet.getPoint()[0] + 1, arrival_bullet.getPoint()[1] + 1] == enemyTankPos):
                     self.enemyTank.calcDamage(arrival_bullet.getDamage())
 
+                arrival_bullets.append(arrival_bullet)
+        
+        return arrival_bullets
 
-                
+    def bulletsPop(self):
+        for i ,bullet in enumerate(self.bullet_list):
+         if bullet.arrivalCheck():
+                self.bullet_list.pop(i)
+    
+    def bulletExplosion(self):
+        bullets = list()
+        for bullet in self.bullet_list:
+           if bullet.arrivalCheck():
+               bullets.append(bullet)
+        return bullets
+        
+               
 
     #data
 
@@ -186,6 +234,8 @@ class GameManager:
         data = TCPData()
         # print("dataset2:"+str(self.getBulletPosition()) +
         #       ":" + str(self.getBulletPoint()))
+        # import pdb
+        # pdb.set_trace()
         data.setData(1, self.getTankPosition()[0], self.getTankHP()[0], [1], self.getBulletPosition(), self.getBulletPoint(
         ), 1, self.getTankPosition()[1], self.getTankHP()[1], self.getBulletOrbit(), self.getBulletPosition(), self.getBulletPoint(
         ), self.turn)
@@ -196,7 +246,7 @@ class GameManager:
         self.myTank.setPosition(data.getEnemyTankPosition())
         self.enemyTank.setPosition(data.getMyTankPosition())
         self.myTank.setHP(data.getEnemyTankHP())
-        self.enemyTank.setPosition(data.getMyTankHP())
+        self.enemyTank.setHP(data.getMyTankHP())
         
         # print("dataset:"+str(data.getMyBulletPosition()) +
         #       ":" + str(data.getMyBulletPoint()))
@@ -214,6 +264,11 @@ class GameManager:
     def sendData(self,data):
         rtData = self.connect.connecting(data)
         self.setData(rtData)
+
+    def readData(self,data):
+        self.changeTurn()
+        self.connect.connecting(data)
+        #self.setData(rtData)
     
     # def calcTilePosition(self,pos):
     #     tile = self.tileList[pos[0]][pos[1]]

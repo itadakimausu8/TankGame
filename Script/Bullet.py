@@ -94,6 +94,26 @@ class Bullet(GameObject,metaclass=ABCMeta):
         else:
            print("Argument please in the list")
     
+    def arrivalCheck(self):
+        x = 0
+        y = 1
+        xd = self.point[x]-self.orbit[x]
+        yd = self.point[y]-self.orbit[y]
+
+
+        if xd == 0 or yd == 0:
+            if (self.point[x] == self.position[x]) and (self.point[y] == self.position[y]):
+                #self.Destroy()
+                return True
+        else:
+            if (self.point[x] == self.position[x]) or (self.point[y] == self.position[y]):
+                #self.Destroy()
+                return True
+        
+        
+        return False
+
+
     def getArrival(self):
         return  self.arrival
 
