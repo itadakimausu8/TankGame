@@ -28,9 +28,10 @@ def orderConnect(receive):
       return int(data1.getMyTurn())
 
 
+
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     # IPアドレスとポートを指定
-    s.bind(('133.14.192.212', 50007))
+    s.bind(('127.0.0.1', 50007))
     # 1 接続
     s.listen()
     # connection するまで待つ

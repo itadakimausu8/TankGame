@@ -9,17 +9,18 @@ class ClientGUI:
 
     mapSize = 10
 
-    def __init__(self):
+    def __init__(self,GM):
         self.isLoad = False
         self.turnText = ""
         pyxel.init(255, 255, caption="Tank Game")
-        self.GM = GameManager()
+        self.GM = GM
         #pyxel.load("assets/tile.pyxel")
         self.tileList = [[Tile(25, w*25, h*25) for h in range(ClientGUI.mapSize)]
                          for w in range(ClientGUI.mapSize)]
 
         self.confirmDraw = False
         self.isBulletMove = False
+        self.firstDraw = False
 
         #add
         self.gameText = ""
@@ -82,7 +83,7 @@ class ClientGUI:
         pyxel.image(1).load(0, 0, "assets/bullet_16x16.png")
         pyxel.image(2).load(0, 0, "assets/tileset25.png")
 
-        self.GM.load()
+        #self.GM.load()
         pyxel.run(self.update, self.draw)
 
     def update(self):
@@ -173,7 +174,7 @@ class ClientGUI:
                                 self.targetX = 4
                                 self.targetY = 4
                             self.bulletSuggest = True
-            elif self.GM.getTurn() == 1:
+            elif self.GM.getTurn() == 1 and self.firstDraw:
                 self.GM.load()
                 self.bullets = self.GM.bulletExplosion()
                 self.GM.bulletsPop()
@@ -195,7 +196,7 @@ class ClientGUI:
             for col in row:
                pyxel.rectb(col.getPosX(), col.getPosY(), col.getPosX(
                ) + col.getSize(), col.getPosY()+col.getSize(), 3)
-        pyxel.text(55, 41, self.turnText, pyxel.frame_count % 16)
+        pyxel.text(0, 0, self.turnText, 4)
 
         #pyxel.blt(-5, -1, 0, 0, 0, self.test.getPosition()[0], self.test.getPosition()[1],0)
         self.x = 0
@@ -270,4 +271,67 @@ class ClientGUI:
 
             if abs(centerX) >= abs(centerY):
                 # print("getCenterPosX:" + str(self.currentTilePosition.getCenterPosX()) +
-                #       "getCenterPosY:" + str(self.currentTilePosition.getCent...
+                #       "getCenterPosY:" + str(self.currentTilePosition.getCenterPosY()) +
+                #       "orbit" + str(orbitY/abs(orbitX))
+                #       )
+                print("bulletPosition:" + str(self.currentTilePosition.getCenterPosX()
+                                              ) + ":" + str(self.currentTilePosition.getCenterPosY()))
+                ans = self.BulletInitialPosition.getCenterPosY() + ((self.BulletPosintPosition.getCenterPosY() - self.BulletInitialPosition.getCenterPosY())/abs(self.BulletPosintPosition.getCenterPosX() -
+                                                                                                                                                                 self.BulletInitialPosition.getCenterPosX()) * abs(self.currentTilePosition.getCenterPosX() - self.BulletInitialPosition.getCenterPosX()))
+                #pyxel.blt(self.currentTilePosition.getCenterPosX(),int(ans), 1, 0, 0, 32, 38, 0)
+                pyxel.blt(self.currentTilePosition.getCenterPosX(), int(
+                    ans), 2, self.bulletAngle[0], self.bulletAngle[1], 25, 25, 0)
+                # import pdb
+                # pdb.set_trace()
+
+            elif abs(centerX) < abs(centerY):
+                # import pdb
+                # pdb.set_trace()
+                print("bulletPosition:" + str(self.currentTilePosition.getCenterPosX()
+                                              ) + ":" + str(self.currentTilePosition.getCenterPosY()))
+                ans = self.BulletInitialPosition.getCenterPosX() + ((self.BulletPosintPosition.getCenterPosX() - self.BulletInitialPosition.getCenterPosX())/abs(self.BulletPosintPosition.getCenterPosY() -
+                                                                                                                                                                 self.BulletInitialPosition.getCenterPosY()) * abs(self.currentTilePosition.getCenterPosY() - self.BulletInitialPosition.getCenterPosY()))
+                pyxel.blt(int(ans),
+                          self.currentTilePosition.getCenterPosY(), 2, self.bulletAngle[0], self.bulletAngle[1], 25, 25, 0)
+
+            #print("bullet2:" + str(self.GM.getBulletPosition()[1]))
+
+        if self.bulletSuggest == True:
+            self.realX = self.targetX*25
+            self.realY = self.targetY*25
+            pyxel.rect(self.realX, self.realY, self.realX+25, self.realY+25, 4)
+
+            #text
+        if self.gameText != "":
+             pyxel.text(128, 128, self.gameText, 7)
+
+        #explosion GUI
+        for bullets in self.bullets:
+            self.bulletsPlace = bullets.getPoint()
+            pyxel.blt(25*self.bulletsPlace[0]-25, 25*self.bulletsPlace[1]-25, 2, 0, 150, 75, 75, 0)
+
+        if(self.GM.getTankHP()[0] > 0 and self.GM.getTankHP()[1] <= 0):
+            pyxel.blt(50, 80, 0, self.winText[0], self.winText[1], 255, 50, 0)
+        elif(self.GM.getTankHP()[0] <= 0 and self.GM.getTankHP()[1] <= 0):
+            pyxel.blt(50, 80, 0, self.drawText[0],
+                      self.drawText[1], 255, 50, 0)
+        elif(self.GM.getTankHP()[0] <= 0 and self.GM.getTankHP()[1] > 0):
+            pyxel.blt(50, 80, 0, self.loseText[0],
+                      self.loseText[1], 255, 50, 0)
+        #pyxel.blt(50, 80, 0, self.drawText[0], self.drawText[1], 255, 50, 0)
+
+        self.firstDraw = True
+
+        if self.confirmDraw:
+            if self.turnText == "EnemyTurn":
+
+                # if pyxel.btnp(pyxel.KEY_LEFT):
+                #     pass
+                # elif pyxel.btnp(pyxel.KEY_RIGHT):
+                #     pass
+                # elif pyxel.btnp(pyxel.KEY_UP):
+                #     pass
+                # elif pyxel.btnp(pyxel.KEY_DOWN):
+                #     pass
+                self.confirmDraw = False
+                self.isLoad = True

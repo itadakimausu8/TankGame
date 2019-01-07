@@ -229,7 +229,6 @@ class GameManager:
                
 
     #data
-
     def createData(self):
         data = TCPData()
         # print("dataset2:"+str(self.getBulletPosition()) +

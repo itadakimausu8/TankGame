@@ -8,7 +8,7 @@ class TCPClient:
     def connecting(self, data):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
        
-            s.connect(('133.14.192.212', 50007))
+            s.connect(('127.0.0.1', 50007))
             
             s.sendall(bytes(data.pushData(), encoding='utf-8', errors='replace'))
 
