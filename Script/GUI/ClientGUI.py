@@ -9,7 +9,7 @@ class ClientGUI:
 
     mapSize = 10
 
-    def __init__(self,GM):
+    def __init__(self, GM):
         self.isLoad = False
         self.turnText = ""
         pyxel.init(255, 255, caption="Tank Game")
@@ -124,41 +124,48 @@ class ClientGUI:
                             if self.targetX > 0 and not (self.currentMyTankX == self.targetX-1 and self.currentMyTankY == self.targetY):
                                 self.targetX -= 1
                         else:
-                            self.GM.pressLeft()
-                            self.myTankAngle = self.leftTank
-                            self.isBulletMove = True
-                            self.confirmDraw = True
-                            # self.GM.load()
+                            if self.GM.getTankPosition()[0][0] != 0:
+                                self.GM.pressLeft()
+                                self.myTankAngle = self.leftTank
+                                self.isBulletMove = True
+                                self.confirmDraw = True
+                                # self.GM.load()
                     elif pyxel.btnp(pyxel.KEY_RIGHT) and self.GM.buttonFrame(pyxel.frame_count):
                         if self.bulletSuggest == True:
                             if self.targetX < self.mapSize-1 and not (self.currentMyTankX == self.targetX+1 and self.currentMyTankY == self.targetY):
                                 self.targetX += 1
                         else:
-                            self.GM.pressRight()
-                            self.myTankAngle = self.rightTank
-                            self.isBulletMove = True
-                            self.confirmDraw = True
-                            # self.GM.load()
+                            if self.GM.getTankPosition()[0][0] != self.mapSize-1:
+                                self.GM.pressRight()
+                                self.myTankAngle = self.rightTank
+                                self.isBulletMove = True
+                                self.confirmDraw = True
+                                # self.GM.load()
+
                     elif pyxel.btnp(pyxel.KEY_UP) and self.GM.buttonFrame(pyxel.frame_count):
                         if self.bulletSuggest == True:
                             if self.targetY > 0 and not (self.currentMyTankY == self.targetY-1 and self.currentMyTankX == self.targetX):
                                 self.targetY -= 1
                         else:
-                            self.GM.pressUp()
-                            self.myTankAngle = self.upperTank
-                            self.isBulletMove = True
-                            self.confirmDraw = True
-                            # self.GM.load()
+                            if self.GM.getTankPosition()[0][1] != 0:
+                                self.GM.pressUp()
+                                self.myTankAngle = self.upperTank
+                                self.isBulletMove = True
+                                self.confirmDraw = True
+                                # self.GM.load()
+
                     elif pyxel.btnp(pyxel.KEY_DOWN) and self.GM.buttonFrame(pyxel.frame_count):
                         if self.bulletSuggest == True:
                             if self.targetY < self.mapSize-1 and not (self.currentMyTankY == self.targetY+1 and self.currentMyTankX == self.targetX):
                                 self.targetY = self.targetY+1
                         else:
-                            self.GM.pressDown()
-                            self.myTankAngle = self.lowerTank
-                            self.isBulletMove = True
-                            self.confirmDraw = True
-                            # self.GM.load()
+                            if self.GM.getTankPosition()[0][1] != self.mapSize-1:
+                                self.GM.pressDown()
+                                self.myTankAngle = self.lowerTank
+                                self.isBulletMove = True
+                                self.confirmDraw = True
+                                # self.GM.load()
+
                     elif pyxel.btnp(pyxel.KEY_SPACE):
                         if self.bulletSuggest == True:
                             self.GM.pressSpace([self.targetX, self.targetY])
@@ -196,7 +203,25 @@ class ClientGUI:
             for col in row:
                pyxel.rectb(col.getPosX(), col.getPosY(), col.getPosX(
                ) + col.getSize(), col.getPosY()+col.getSize(), 3)
-        pyxel.text(0, 0, self.turnText, 4)
+
+        #ターンを記述
+        if(self.GM.getTankPosition()[0][0] >= 5 and self.GM.getTankPosition()[0][1] >= 5):
+            if self.turnText == "MyTurn":
+                pyxel.blt(0, 0, 2, 0, 248, 100, 13, 0)
+                #pyxel.text(0, 0, self.turnText.upper(), 4)
+            elif self.turnText == "EnemyTurn":
+                pyxel.blt(0, 0, 2, 0, 224, 100, 20, 0)
+                #pyxel.text(0, 0, self.turnText.upper(), 4)
+            else:
+                pyxel.text(0, 0, self.turnText.upper(), 4)
+        else:
+            if self.turnText == "MyTurn":
+                pyxel.blt(150, 0, 2, 0, 248, 75, 13, 0)
+            elif self.turnText == "EnemyTurn":
+                pyxel.blt(150, 0, 2, 0, 224, 100, 20, 0)
+            else:
+                pyxel.text(150, 0, self.turnText, 4)
+        #pyxel.text(0, 0, self.turnText, 4)
 
         #pyxel.blt(-5, -1, 0, 0, 0, self.test.getPosition()[0], self.test.getPosition()[1],0)
         self.x = 0
